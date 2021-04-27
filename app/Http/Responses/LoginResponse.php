@@ -2,7 +2,7 @@
 
 namespace App\Http\Responses;
 
-use Illuminate\Support\Facades\Auth;
+use App\Models\Role;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 
 class LoginResponse implements LoginResponseContract
@@ -16,10 +16,12 @@ class LoginResponse implements LoginResponseContract
     
     private function redirect()
     {
-        if (Auth::user()->role_id == 1) {
-            return redirect('admin');
+        $roles = Role::all();
+        foreach ($roles as $role) 
+        {
+            if (auth()->user()->role_id == $role->id) {
+                return redirect($role->redirectTo);
+            }
         }
-
-        return redirect(config('fortify.home'));
     }
 }

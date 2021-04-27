@@ -17,6 +17,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/home', function () {
-    return view('home');
-})->middleware('auth');
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::middleware(['role:user'])->group(function () {
+        Route::get('/home', function () {
+            return view('home');
+        });
+    });
+
+    Route::middleware(['role:admin'])->group(function () {
+        Route::get('/admin', function () {
+            return view('home');
+        });
+    });
+});
